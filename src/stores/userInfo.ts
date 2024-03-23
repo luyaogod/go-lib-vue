@@ -5,10 +5,6 @@ export const useUUIDStore = defineStore('mytoken', () => {
   const UUID = ref('')
 
   const getUUID = computed(() => {
-    console.log(UUID.value)
-
-    console.log(window.localStorage.getItem('UUID'))
-
     return UUID.value || window.localStorage.getItem('UUID') || ''
   })
 

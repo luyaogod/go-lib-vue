@@ -1,12 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-// import { showToast } from 'vant'
-// import { showSuccessToast, showFailToast } from 'vant'
 import { useUUIDStore } from '@/stores/userInfo'
-import { useRouter } from 'vue-router'
 import { submitTask } from '@/api/user'
 import MsgPop from '@/components/MsgPop.vue'
 
+const store = useUUIDStore()
 //消息提醒组件
 const showSuccess = ref(false)
 const successDetail = ref('')
@@ -24,15 +22,7 @@ function dangerMsg(detail: string) {
 }
 
 const wxurl = ref() //输入框数据
-const router = useRouter()
-const store = useUUIDStore()
 const buttonLoading = ref(false)
-
-if (store.getUUID) {
-  undefined
-} else {
-  router.push('/error')
-}
 
 //清空输入框事件函数
 function cleanInput() {

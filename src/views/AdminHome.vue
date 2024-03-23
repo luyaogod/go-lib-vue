@@ -1,31 +1,43 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { type userItem, adminAuth, getUserList, createUser } from '@/api/admin'
+import { type userItem, getUserList, createUser } from '@/api/admin'
 import MsgPop from '@/components/MsgPop.vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useUUIDStore } from '@/stores/userInfo'
 import { deleteUser } from '@/api/admin'
-
+import { adminAuth } from '@/api/admin'
 //身份校验
 const router = useRouter()
 const route = useRoute()
 const params = ref(route.params)
 const uuid = params.value.uuid as string
-const store = useUUIDStore()
+console.log(uuid)
+const data = ref<userItem[]>()
+const fontendLink = import.meta.env.VITE_WEBSITE_UTL
 
 adminAuth(uuid)
   .then((res) => {
     const status = res.status
-    //   console.log(status)
-
     if (status == 'success') {
-      store.UUID = uuid
-      store.saveUUID(uuid)
+      updateData(uuid)
     } else router.push('/error')
   })
   .catch(() => {
     router.push(`/error`)
   })
+
+function updateData(uuid: string) {
+  getUserList(uuid)
+    .then((res) => {
+      if (res.length > 0) {
+        data.value = res
+      } else {
+        router.push('/error')
+      }
+    })
+    .catch(() => {
+      router.push('/error')
+    })
+}
 
 //消息提示组件
 const showSuccess = ref(false)
@@ -43,35 +55,16 @@ function dangerMsg(detail: string) {
   dangerDetail.value = detail
 }
 
-//数据获取
-const data = ref<userItem[]>()
-
-function updateData() {
-  getUserList(store.getUUID)
-    .then((res) => {
-      if (res.length > 0) {
-        data.value = res
-      } else {
-        router.push('/error')
-      }
-    })
-    .catch(() => {
-      router.push('/error')
-    })
-}
-
-updateData()
-
 //删除处理
 
 function deleteButton(userId: number) {
   successMsg('正在删除')
-  deleteUser(store.getUUID, userId)
+  deleteUser(uuid, userId)
     .then((res) => {
       if (res.status === 'success') {
         successMsg('删除成功')
-        getUserList(store.getUUID)
-        updateData()
+        getUserList(uuid)
+        updateData(uuid)
       } else {
         dangerMsg(`删除失败！${res.detail}`)
       }
@@ -79,22 +72,6 @@ function deleteButton(userId: number) {
     .catch((error) => {
       dangerMsg(`删除失败！${error}`)
     })
-}
-
-//用户链接复制
-async function copy(uuid: string) {
-  const fontendLink = import.meta.env.VITE_FRONTEND_URL
-  const url = `${fontendLink}/user/${uuid}`
-  try {
-    if (navigator.clipboard) {
-      await navigator.clipboard.writeText(url)
-      successMsg('复制成功')
-    } else {
-      dangerMsg('复制失败')
-    }
-  } catch (err) {
-    dangerMsg('复制失败')
-  }
 }
 
 //新建用户
@@ -111,11 +88,11 @@ function submitAddUser() {
     const postData = {
       username: newUserName.value
     }
-    createUser(store.getUUID, postData).then((res) => {
+    createUser(uuid, postData).then((res) => {
       if (res.status === 'success') {
         showForm.value = false
         successMsg('创建成功')
-        updateData()
+        updateData(uuid)
       } else {
         dangerMsg('创建失败')
       }
@@ -129,7 +106,7 @@ function submitAddUser() {
 <template>
   <div class="body">
     <div class="item" v-for="i in data" :key="i.id">
-      <van-cell :title="i.username" :label="i.uuid"> </van-cell>
+      <van-cell :title="i.username" :label="`${fontendLink}/user/${i.uuid}`"> </van-cell>
       <div class="itemButtonWrap">
         <van-button
           square
@@ -138,7 +115,6 @@ function submitAddUser() {
           text="删除"
           @click="deleteButton(i.id)"
         />
-        <van-button square class="itemButton" type="primary" text="复制" @click="copy(i.uuid)" />
       </div>
     </div>
   </div>
