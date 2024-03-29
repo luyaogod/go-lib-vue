@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useUUIDStore } from '@/stores/userInfo'
-import { submitTask } from '@/api/user'
+import { submitTask, userAuth } from '@/api/user'
 import MsgPop from '@/components/MsgPop.vue'
 
 const store = useUUIDStore()
+
 //消息提醒组件
 const showSuccess = ref(false)
 const successDetail = ref('')
@@ -24,6 +25,26 @@ function dangerMsg(detail: string) {
 const wxurl = ref() //输入框数据
 const buttonLoading = ref(false)
 
+//获取用户数据
+const balance = ref()
+
+function getUserInfo() {
+  userAuth(store.getUUID)
+    .then((rep) => {
+      if (rep.status === 'success') {
+        balance.value = rep.detail.balance
+        console.log(balance.value)
+      } else {
+        dangerMsg('出错了信息获取失败！')
+      }
+    })
+    .catch((error) => {
+      dangerMsg(`出错了信息获取失败！:${error}`)
+    })
+}
+
+getUserInfo()
+
 //清空输入框事件函数
 function cleanInput() {
   wxurl.value = ''
@@ -41,6 +62,7 @@ function sumbit() {
         const status = res.status
         if (status == 'success') {
           successMsg('任务提交成功')
+          getUserInfo()
           buttonLoading.value = false
         } else {
           dangerMsg(res.detail)
@@ -85,6 +107,10 @@ function sumbit() {
       >提交抢座任务</van-button
     >
   </div>
+
+  <van-divider :style="{ color: '#f34824', borderColor: '#f34824', padding: '0 16px' }">
+    剩余抢座次数{{ balance }}
+  </van-divider>
 
   <MsgPop :detail="successDetail" v-model="showSuccess" type="success" />
   <MsgPop :detail="dangerDetail" v-model="showDanger" type="danger" />
