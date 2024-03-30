@@ -138,7 +138,10 @@ function updateConfirm() {
 <template>
   <div class="body">
     <div class="item" v-for="i in data" :key="i.id">
-      <van-cell :title="`${i.username} ${i.balance}`" :label="`${fontendLink}/user/${i.uuid}`">
+      <van-cell
+        :title="`${i.username} ${i.balance} ${i.task}`"
+        :label="`${fontendLink}/user/${i.uuid}`"
+      >
       </van-cell>
       <div class="buttonWrap">
         <div class="itemButtonWrap">

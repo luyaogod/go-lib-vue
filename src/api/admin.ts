@@ -16,6 +16,7 @@ export interface userItem {
   username: string
   uuid: string
   balance: number
+  task?: string
 }
 
 export async function getUserList(uuid: string) {
