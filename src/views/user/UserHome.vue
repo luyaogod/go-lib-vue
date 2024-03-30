@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { userAuth } from '@/api/user'
+import { userAuthFunc } from '@/utils/userAuth'
 import { useUUIDStore } from '@/stores/userInfo'
 import tyingTools from '@/components/tyingTools.vue'
 
@@ -9,20 +9,16 @@ import tyingTools from '@/components/tyingTools.vue'
 const router = useRouter()
 const route = useRoute()
 const params = ref(route.params)
-const uuid = params.value.uuid as string
+const store = useUUIDStore()
 
-userAuth(uuid)
-  .then((res) => {
-    const status = res.status
-    if (status == 'success') {
-      const store = useUUIDStore()
-      store.UUID = uuid
-      store.saveUUID(uuid)
-    } else router.push('/error')
-  })
-  .catch(() => {
-    router.push('/error')
-  })
+onMounted(() => {
+  const uuid = params.value.uuid as string
+  userAuthFunc(uuid, store)
+    .then(() => {})
+    .catch(() => {
+      router.push('/error')
+    })
+})
 
 //按钮事件
 const isLoadingOne = ref(false)

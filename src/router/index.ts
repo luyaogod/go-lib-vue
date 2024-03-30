@@ -1,8 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useUUIDStore } from '@/stores/userInfo'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path: '/mario/:uuid',
+      name: 'marioAdmin',
+      component: () => import('@/views/AdminHome.vue')
+    },
     {
       path: '/user/:uuid',
       name: 'userPage',
@@ -11,11 +17,13 @@ const router = createRouter({
     {
       path: '/user-seats',
       name: 'userSeats',
+      meta: { requireAuth: true },
       component: () => import('@/views/user/UserSeats.vue')
     },
     {
       path: '/user-task',
       name: 'userTask',
+      meta: { requireAuth: true },
       component: () => import('@/views/user/UserTask.vue')
     },
     {
@@ -23,11 +31,7 @@ const router = createRouter({
       name: 'test',
       component: () => import('@/components/tyingTools.vue')
     },
-    {
-      path: '/mario/:uuid',
-      name: 'marioAdmin',
-      component: () => import('@/views/AdminHome.vue')
-    },
+
     {
       path: '/help',
       name: 'help',
@@ -40,6 +44,19 @@ const router = createRouter({
       component: () => import('@/views/ErrorPage.vue')
     }
   ]
+})
+
+router.beforeEach((to, from, next) => {
+  if (to.meta.requireAuth) {
+    const store = useUUIDStore()
+    const uuid = store.getUUID
+    if (uuid !== '' && uuid !== undefined) {
+      next()
+    } else {
+      next({ name: 'errorPage', query: { redirect: to.fullPath } })
+    }
+  }
+  next()
 })
 
 export default router

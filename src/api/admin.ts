@@ -15,6 +15,7 @@ export interface userItem {
   id: number
   username: string
   uuid: string
+  balance: number
 }
 
 export async function getUserList(uuid: string) {
@@ -25,6 +26,7 @@ export async function getUserList(uuid: string) {
 //用户创建接口
 export interface createUserData {
   username: string
+  balance: number
 }
 
 export async function createUser(uuid: string, data: createUserData) {
@@ -35,5 +37,11 @@ export async function createUser(uuid: string, data: createUserData) {
 //用户删除接口
 export async function deleteUser(uuid: string, userId: number) {
   const response = await axio.get(`/admin/delete_user/${userId}/${uuid}`)
+  return response.data as simpleRespose
+}
+
+//用户更新接口
+export async function updateUser(uuid: string, userId: number, data: createUserData) {
+  const response = await axio.post(`/admin/update_user/${userId}/${uuid}`, data)
   return response.data as simpleRespose
 }

@@ -1,9 +1,20 @@
 import axio from '@/utils/requests'
 
 //用户认证接口
+export interface userInfo {
+  id: number
+  username: string
+  balance: number
+}
+
+export interface userAuthResponse {
+  status: string
+  detail: userInfo
+}
+
 export async function userAuth(uuid: string) {
   const response = await axio.get(`/user/get_user/${uuid}`)
-  return response.data
+  return response.data as userAuthResponse
 }
 
 //用户座位信息接口

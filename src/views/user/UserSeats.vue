@@ -10,6 +10,8 @@ import {
 } from '@/api/user'
 import MsgPop from '@/components/MsgPop.vue'
 
+const store = useUUIDStore()
+const router = useRouter()
 //消息提示组件
 //消息提醒组件
 const showSuccess = ref(false)
@@ -25,14 +27,6 @@ function successMsg(detail: string) {
 function dangerMsg(detail: string) {
   showDanger.value = true
   dangerDetail.value = detail
-}
-
-//身份校验
-
-const router = useRouter()
-const store = useUUIDStore()
-if (store.getUUID === '') {
-  router.push('/error')
 }
 
 //初始用户座位数据请求
@@ -220,21 +214,6 @@ function dataSubmit() {
         if (rep.status === 'success') {
           sumbitButtonLoading.value = false
           successMsg('保存成功')
-
-          //刷新数据
-          // userAllSeat(store.getUUID)
-          //   .then((res) => {
-          //     if (res.status == 'success') {
-          //       useResponse.value = res.detail
-          //       successMsg('数据已更新')
-          //     } else {
-          //       useResponse.value = newUser
-          //     }
-          //   })
-          //   .catch((error) => {
-          //     useResponse.value = []
-          //     dangerMsg(`出错了！${error}`)
-          //   })
           router.push('/user-seats')
           //刷新数据
         } else {
