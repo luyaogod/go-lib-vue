@@ -76,9 +76,15 @@ function sumbit() {
       })
   }
 }
+
+const clickBack = () => history.back()
 </script>
 
 <template>
+  <van-nav-bar left-text="返回" left-arrow @click-left="clickBack" />
+  <van-divider :style="{ color: '#f34824', borderColor: '#f34824', padding: '0 16px' }">
+    剩余抢座次数{{ balance }}
+  </van-divider>
   <div class="body">
     <van-divider :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0 16px' }">
       提交时间为：18:00-20:00否则无效
@@ -108,10 +114,6 @@ function sumbit() {
     >
   </div>
 
-  <van-divider :style="{ color: '#f34824', borderColor: '#f34824', padding: '0 16px' }">
-    剩余抢座次数{{ balance }}
-  </van-divider>
-
   <MsgPop :detail="successDetail" v-model="showSuccess" type="success" />
   <MsgPop :detail="dangerDetail" v-model="showDanger" type="danger" />
 </template>
@@ -123,7 +125,7 @@ function sumbit() {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 80vh;
+  height: 70vh;
   background-color: transparent;
 }
 .input-button {

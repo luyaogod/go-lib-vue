@@ -230,14 +230,17 @@ function dataSubmit() {
     dangerMsg('出错了！数据为空')
   }
 }
+
+const clickBack = () => history.back()
 </script>
 
 <template>
-  <van-divider :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0 16px' }">
-    常用座位绑定
-  </van-divider>
-
   <div class="body">
+    <van-nav-bar left-text="返回" left-arrow @click-left="clickBack" />
+    <van-divider :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0 16px' }">
+      常用座位绑定
+    </van-divider>
+
     <div class="main_content">
       <div class="item" v-for="(i, index) in useResponse" :key="index">
         <van-cell-group inset>
