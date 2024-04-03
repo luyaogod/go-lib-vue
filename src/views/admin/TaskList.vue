@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { type taskItem, getTaskList, adminAuth } from '@/api/admin'
-import { useRoute, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { useUUIDStore } from '@/stores/userInfo'
 
 //pinia
