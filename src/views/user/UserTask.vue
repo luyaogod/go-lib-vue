@@ -1,11 +1,18 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useUUIDStore } from '@/stores/userInfo'
-import { submitTask, userAuth } from '@/api/user'
+import { submitTask, userDetail } from '@/api/user'
 import MsgPop from '@/components/MsgPop.vue'
+import { taskTimeDiff } from '@/utils/timeFunc'
+//页面显示配置
+const mainShow = ref(false)
+const pageLoading = ref(true)
+
+//任务可提交时间配置
+const START = [18, 20, 0, 0]
+const END = [19, 55, 0, 0]
 
 const store = useUUIDStore()
-
 //消息提醒组件
 const showSuccess = ref(false)
 const successDetail = ref('')
@@ -25,25 +32,39 @@ function dangerMsg(detail: string) {
 const wxurl = ref() //输入框数据
 const buttonLoading = ref(false)
 
-//获取用户数据
-const balance = ref()
-
-function getUserInfo() {
-  userAuth(store.getUUID)
-    .then((rep) => {
-      if (rep.status === 'success') {
-        balance.value = rep.detail.balance
-        console.log(balance.value)
-      } else {
-        dangerMsg('出错了信息获取失败！')
-      }
-    })
-    .catch((error) => {
-      dangerMsg(`出错了信息获取失败！:${error}`)
-    })
+//倒计时组件变量与时间计算
+const time = ref()
+const ret = taskTimeDiff(START, END)
+time.value = ret
+const taskSubmitdisabled = ref(true) //按钮禁用
+if (ret === 0) {
+  taskSubmitdisabled.value = false
+} else {
+  setTimeout(function () {
+    taskSubmitdisabled.value = false
+  }, ret)
 }
 
-getUserInfo()
+//获取用户数据
+const balance = ref()
+function getUserInfo() {
+  userDetail(store.getUUID)
+    .catch(() => {
+      dangerMsg('用户数据获取失败')
+    })
+    .then((ret) => {
+      if (ret === undefined) dangerMsg('用户数据获取失败')
+      else {
+        pageLoading.value = false
+        mainShow.value = true
+        balance.value = ret.balance
+      }
+    })
+}
+//页面挂载事件
+onMounted(() => {
+  getUserInfo()
+})
 
 //清空输入框事件函数
 function cleanInput() {
@@ -81,21 +102,23 @@ const clickBack = () => history.back()
 </script>
 
 <template>
-  <van-nav-bar left-text="返回" left-arrow @click-left="clickBack" />
-  <van-divider :style="{ color: '#f34824', borderColor: '#f34824', padding: '0 16px' }">
-    剩余抢座次数{{ balance }}
-  </van-divider>
-  <div class="body">
-    <van-divider :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0 16px' }">
-      提交时间为：18:00-20:00否则无效
-    </van-divider>
+  <van-nav-bar left-text="返回" style="border-bottom: #1989fa 1px solid" @click-left="clickBack" />
 
-    <van-divider :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0 16px' }">
-      提交任务前需确保已在本站绑定常用座位
-    </van-divider>
+  <!-- 加载样式 -->
+  <div class="loadingBox" v-show="pageLoading">
+    <van-loading size="30" color="#1989fa" />
+  </div>
 
-    <van-divider :style="{ color: '#f34824', borderColor: '#f34824', padding: '0 16px' }">
-      请勿重复提交任务
+  <van-cell v-show="mainShow" title="剩余抢座次数" center>
+    <template #right-icon>
+      <span>{{ balance }}</span>
+    </template>
+  </van-cell>
+
+  <div class="body" v-show="mainShow">
+    <van-divider :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0 16px' }">
+      可提交时间{{ START[0] }}:{{ START[1] }}-{{ END[0] }}:{{ END[1] }} 倒计时：
+      <van-count-down style="color: #1989fa" :time="time" />
     </van-divider>
 
     <van-cell-group inset class="input-button">
@@ -110,6 +133,7 @@ const clickBack = () => history.back()
       type="primary"
       @click="sumbit"
       :loading="buttonLoading"
+      :disabled="taskSubmitdisabled"
       >提交抢座任务</van-button
     >
   </div>
@@ -125,7 +149,7 @@ const clickBack = () => history.back()
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 70vh;
+  height: 60vh;
   background-color: transparent;
 }
 .input-button {
@@ -140,11 +164,14 @@ h3 {
   margin-bottom: 10px;
 }
 
-.textHeader {
-  margin-top: 30vh;
-}
-
 .cleanInput {
   margin-bottom: 20px;
+}
+.loadingBox {
+  margin-top: 10px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

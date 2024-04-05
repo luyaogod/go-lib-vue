@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { userAuthFunc } from '@/utils/userAuth'
 import { useUUIDStore } from '@/stores/userInfo'
 import tyingTools from '@/components/tyingTools.vue'
+import { userAuth } from '@/api/user'
 
 //用户校验
 const router = useRouter()
@@ -13,11 +13,20 @@ const store = useUUIDStore()
 
 onMounted(() => {
   const uuid = params.value.uuid as string
-  userAuthFunc(uuid, store)
-    .then(() => {})
-    .catch(() => {
-      router.push('/error')
-    })
+  if (!uuid) router.push('error')
+  else {
+    userAuth(uuid)
+      .catch(() => {
+        router.push('/error')
+      })
+      .then((ret) => {
+        if (ret === false) router.push('/error')
+        else {
+          store.UUID = uuid
+          store.saveUUID(uuid)
+        }
+      })
+  }
 })
 
 //按钮事件
@@ -42,35 +51,41 @@ function bottonClickThree() {
 <template>
   <div class="body">
     <!-- <h3>衣带渐宽终不悔，为伊消得人憔悴！</h3> -->
-
-    <div class="main_warp">
-      <tyingTools :text="'衣带渐宽终不悔，为伊消得人憔悴！'" />
-
-      <van-button
-        class="buttonGo"
-        type="primary"
-        size="large"
-        @click="bottonClickOne()"
-        :loading="isLoadingOne"
-        >更改常用座位</van-button
-      >
-      <van-button
-        class="buttonGo"
-        type="primary"
-        size="large"
-        @click="bottonClickTwo()"
-        :loading="isLoadingTwo"
-        >添加选座任务</van-button
-      >
-      <van-button
-        class="buttonGo"
-        type="primary"
-        size="large"
-        @click="bottonClickThree()"
-        :loading="isLoadingThree"
-        >查看帮助文档</van-button
-      >
+    <div style="width: 100%; display: flex; align-items: center; justify-content: center">
+      <tyingTools
+        style="width: 320px"
+        :typingSpeed="90"
+        :text="'衣带渐宽终不悔，为伊消得人憔悴！'"
+      />
     </div>
+
+    <van-button
+      class="buttonGo"
+      type="primary"
+      size="large"
+      block
+      @click="bottonClickOne()"
+      :loading="isLoadingOne"
+      >更改常用座位</van-button
+    >
+    <van-button
+      class="buttonGo"
+      type="primary"
+      size="large"
+      block
+      @click="bottonClickTwo()"
+      :loading="isLoadingTwo"
+      >添加选座任务</van-button
+    >
+    <van-button
+      class="buttonGo"
+      type="primary"
+      size="large"
+      block
+      @click="bottonClickThree()"
+      :loading="isLoadingThree"
+      >查看帮助文档</van-button
+    >
   </div>
 </template>
 

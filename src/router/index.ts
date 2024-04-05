@@ -31,11 +31,11 @@ const router = createRouter({
       meta: { requireAuth: true },
       component: () => import('@/views/user/UserTask.vue')
     },
-    {
-      path: '/test',
-      name: 'test',
-      component: () => import('@/views/testPage.vue')
-    },
+    // {
+    //   path: '/test',
+    //   name: 'test',
+    //   component: () => import('@/views/testPage.vue')
+    // },
 
     {
       path: '/help',
@@ -60,8 +60,7 @@ router.beforeEach((to, from, next) => {
     } else {
       next({ name: 'errorPage', query: { redirect: to.fullPath } })
     }
-  }
-  next()
+  } else next()
 })
 
 export default router

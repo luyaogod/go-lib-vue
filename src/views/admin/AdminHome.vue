@@ -165,16 +165,16 @@ function deleteUserButton() {
 //复制按钮
 const source = ref('Hello')
 const { copy, isSupported } = useClipboard({ source })
+const baseUrl = import.meta.env.VITE_WEBSITE_UTL
 
 function copyUrlButton() {
   if (!isSupported.value) {
     dangerMsg('浏览器不支持')
   } else {
     const index = activeName.value
-    const baseUrl = import.meta.env.VITE_WEBSITE_UTL
     source.value = `${baseUrl}/user/${userList.value[index].uuid}`
     copy(source.value)
-    // successMsg('复制成功')
+    successMsg('复制成功')
   }
 }
 </script>
@@ -228,7 +228,7 @@ function copyUrlButton() {
   </div>
 
   <!-- 新建用户表单 -->
-  <van-popup v-model:show="showAddUserPop" position="bottom" :style="{ height: '30%' }">
+  <van-popup v-model:show="showAddUserPop" position="bottom" :style="{ height: '60%' }">
     <div class="popDetailWrap">
       <van-field v-model="createUserStore.username" label="用户名" placeholder="请输入用户名" />
       <van-field v-model="createUserStore.balance" label="余额" placeholder="请输入余额" />
@@ -247,7 +247,7 @@ function copyUrlButton() {
   </van-popup>
 
   <!-- 更新用户表单 -->
-  <van-popup v-model:show="showUpdateUserPop" position="bottom" :style="{ height: '30%' }">
+  <van-popup v-model:show="showUpdateUserPop" position="bottom" :style="{ height: '60%' }">
     <div class="popDetailWrap">
       <van-field v-model="updateUserStore.username" label="用户名" placeholder="请输入用户名" />
       <van-field v-model="updateUserStore.balance" label="余额" placeholder="请输入余额" />
@@ -267,7 +267,7 @@ function copyUrlButton() {
   </van-popup>
 
   <!-- 删除用户确定 -->
-  <van-popup v-model:show="showDeleteUserPop" position="bottom" :style="{ height: '30%' }">
+  <van-popup v-model:show="showDeleteUserPop" position="bottom" :style="{ height: '60%' }">
     <div class="popDetailWrap deleteSurePopWrap">
       <div class="itemButton" style="width: 100%">
         <van-button
