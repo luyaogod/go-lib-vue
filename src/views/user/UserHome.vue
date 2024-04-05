@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUUIDStore } from '@/stores/userInfo'
-import tyingTools from '@/components/tyingTools.vue'
+// import tyingTools from '@/components/tyingTools.vue'
 import { userAuth } from '@/api/user'
 
 //用户校验
@@ -50,14 +50,7 @@ function bottonClickThree() {
 
 <template>
   <div class="body">
-    <!-- <h3>衣带渐宽终不悔，为伊消得人憔悴！</h3> -->
-    <div style="width: 100%; display: flex; align-items: center; justify-content: center">
-      <tyingTools
-        style="width: 320px"
-        :typingSpeed="90"
-        :text="'衣带渐宽终不悔，为伊消得人憔悴！'"
-      />
-    </div>
+    <tyingTools style="width: 320px" :typingSpeed="90" :text="'衣带渐宽终不悔，为伊消得人憔悴！'" />
 
     <van-button
       class="buttonGo"
