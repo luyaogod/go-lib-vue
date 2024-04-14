@@ -3,6 +3,7 @@ import axio from '@/utils/requests'
 //用户认证接口
 export interface userInfo {
   id: number
+  uuid: string
   username: string
   balance: number
 }
@@ -13,8 +14,25 @@ export interface userAuthResponse {
 }
 
 export async function userAuth(uuid: string) {
-  const response = await axio.get(`/user/get_user/${uuid}`)
-  return response.data as userAuthResponse
+  try {
+    const response = await axio.get(`/user/get_user/${uuid}`)
+    const data = response.data as userAuthResponse
+    if (data.status === 'success') return true
+    else return false
+  } catch (error) {
+    return false
+  }
+}
+
+export async function userDetail(uuid: string): Promise<userInfo | undefined> {
+  try {
+    const response = await axio.get(`/user/get_user/${uuid}`)
+    const data = response.data as userAuthResponse
+    if (data.status === 'success') return data.detail as userInfo
+    else return undefined
+  } catch (error) {
+    return undefined
+  }
 }
 
 //用户座位信息接口
@@ -41,9 +59,16 @@ export interface Response {
   detail: DetailItem[]
 }
 
-export async function userAllSeat(uuid: string) {
+export async function userAllSeat(uuid: string): Promise<DetailItem[] | -1> {
   const response = await axio.get(`/user/get_all_lib/${uuid}`)
-  return response.data as Response
+  const data = response.data as Response
+  try {
+    if (data.status === 'success') {
+      return data.detail
+    } else return -1 //error
+  } catch (error) {
+    return -1 //error
+  }
 }
 
 //更新座位列表接口

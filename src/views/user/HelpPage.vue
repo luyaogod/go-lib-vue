@@ -1,6 +1,10 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const clickBack = () => history.back()
+</script>
 
 <template>
+  <van-nav-bar left-text="返回" left-arrow @click-left="clickBack" />
+
   <div class="body">
     <h1 class="text">帮助文档</h1>
     <a

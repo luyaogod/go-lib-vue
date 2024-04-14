@@ -5,9 +5,14 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/mario/:uuid',
+      path: '/mario/users/:uuid',
       name: 'marioAdmin',
-      component: () => import('@/views/AdminHome.vue')
+      component: () => import('@/views/admin/AdminHome.vue')
+    },
+    {
+      path: '/mario/tasks',
+      name: 'task',
+      component: () => import('@/views/admin/TaskList.vue')
     },
     {
       path: '/user/:uuid',
@@ -26,11 +31,11 @@ const router = createRouter({
       meta: { requireAuth: true },
       component: () => import('@/views/user/UserTask.vue')
     },
-    {
-      path: '/test',
-      name: 'test',
-      component: () => import('@/components/tyingTools.vue')
-    },
+    // {
+    //   path: '/test',
+    //   name: 'test',
+    //   component: () => import('@/views/testPage.vue')
+    // },
 
     {
       path: '/help',
@@ -41,7 +46,7 @@ const router = createRouter({
     {
       path: '/:xxx(.*)*',
       name: 'errorPage',
-      component: () => import('@/views/ErrorPage.vue')
+      component: () => import('@/views/error/ErrorPage.vue')
     }
   ]
 })
@@ -55,8 +60,7 @@ router.beforeEach((to, from, next) => {
     } else {
       next({ name: 'errorPage', query: { redirect: to.fullPath } })
     }
-  }
-  next()
+  } else next()
 })
 
 export default router
