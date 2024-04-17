@@ -32,7 +32,7 @@ const showStatusText = ref(false)
 const userTaskStatus = ref(5) //任务状态
 const checked = ref(false) //任务开关Status
 const switchButtonLoading = ref(false) //切换按钮加载状态
-const balance = ref(0)
+const balance = ref()
 const statusList = ref([
   {
     text: '任务已关闭',
@@ -78,6 +78,7 @@ onMounted(() => {
           router.push('/error')
         } else {
           balance.value = rep.balance
+          // console.log(balance.value)
           store.UUID = uuid
           store.saveUUID(uuid)
           //请求用户任务数据
@@ -212,9 +213,6 @@ function bottonClickThree() {
     >
   </div>
 
-  <MsgPop :detail="successDetail" v-model="showSuccess" type="success" />
-  <MsgPop :detail="dangerDetail" v-model="showDanger" type="danger" />
-
   <van-divider
     :style="{
       color: '#1989fa',
@@ -224,6 +222,8 @@ function bottonClickThree() {
   >
     剩余次数：{{ balance }}
   </van-divider>
+  <MsgPop :detail="successDetail" v-model="showSuccess" type="success" />
+  <MsgPop :detail="dangerDetail" v-model="showDanger" type="danger" />
 </template>
 
 <style scoped>

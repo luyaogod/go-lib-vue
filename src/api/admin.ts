@@ -107,3 +107,21 @@ export async function getTaskList(uuid: string): Promise<taskItem[]> {
     return []
   }
 }
+
+//任务状态列表接口状态
+export interface tasrRetItem {
+  user_id: number
+  id: number
+  status: number
+  time: string
+  username: string
+}
+
+export async function getTaskRet(offset: number, uuid: string): Promise<tasrRetItem[]> {
+  try {
+    const rep = await axio.get(`/admin/task_ret/${offset}/${uuid}`)
+    return rep.data as tasrRetItem[]
+  } catch {
+    return []
+  }
+}
