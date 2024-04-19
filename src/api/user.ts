@@ -107,3 +107,39 @@ export async function submitTask(url: string, uuid: string) {
   const response = await axio.post(`/user/add_task/${uuid}`, postData)
   return response.data as simpleRespose
 }
+
+//更新cookie
+export async function saveCookie(url: string, uuid: string) {
+  const postData = {
+    wx_url: url
+  }
+  const response = await axio.post(`/user/save_cookie/${uuid}`, postData)
+  return response.data as simpleRespose
+}
+
+//获取用户任务
+interface userTaskInfo {
+  id: number
+  add_time: string
+  wx_cookie: string
+  status: number
+  user_id: number
+}
+
+export async function user_task(uuid: string) {
+  const response = await axio.get(`/user/user_task/${uuid}`)
+  return response.data as userTaskInfo | null
+}
+
+export async function switchTaskStatus(uuid: string): Promise<boolean> {
+  try {
+    const response = await axio.get(`/user/user_task/switch_status/${uuid}`)
+    const rep = response.data as simpleRespose
+    if (rep.status === 'error') {
+      return false
+    } else return true
+  } catch (error) {
+    console.log(error)
+    return false
+  }
+}

@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useUUIDStore } from '@/stores/userInfo'
-import { submitTask, userDetail } from '@/api/user'
+import { userDetail, saveCookie } from '@/api/user'
 import MsgPop from '@/components/MsgPop.vue'
-import { taskTimeDiff } from '@/utils/timeFunc'
+// import { taskTimeDiff } from '@/utils/timeFunc'
 //页面显示配置
 const mainShow = ref(false)
 const pageLoading = ref(true)
 
 //任务可提交时间配置
-const START = [18, 20, 0, 0]
-const END = [19, 55, 0, 0]
+// const START = [18, 20, 0, 0]
+// const END = [19, 55, 0, 0]
 
 const store = useUUIDStore()
 //消息提醒组件
@@ -33,17 +33,17 @@ const wxurl = ref() //输入框数据
 const buttonLoading = ref(false)
 
 //倒计时组件变量与时间计算
-const time = ref()
-const ret = taskTimeDiff(START, END)
-time.value = ret
-const taskSubmitdisabled = ref(true) //按钮禁用
-if (ret === 0) {
-  taskSubmitdisabled.value = false
-} else {
-  setTimeout(function () {
-    taskSubmitdisabled.value = false
-  }, ret)
-}
+// const time = ref()
+// const ret = taskTimeDiff(START, END)
+// time.value = ret
+// const taskSubmitdisabled = ref(true) //按钮禁用
+// if (ret === 0) {
+//   taskSubmitdisabled.value = false
+// } else {
+//   setTimeout(function () {
+//     taskSubmitdisabled.value = false
+//   }, ret)
+// }
 
 //获取用户数据
 const balance = ref()
@@ -78,7 +78,7 @@ function sumbit() {
     dangerMsg('请填写微信身份链接')
     buttonLoading.value = false
   } else {
-    submitTask(wxurl.value, store.getUUID)
+    saveCookie(wxurl.value, store.getUUID)
       .then((res) => {
         const status = res.status
         if (status == 'success') {
@@ -109,17 +109,17 @@ const clickBack = () => history.back()
     <van-loading size="30" color="#1989fa" />
   </div>
 
-  <van-cell v-show="mainShow" title="剩余抢座次数" center>
+  <!-- <van-cell v-show="mainShow" title="剩余抢座次数" center>
     <template #right-icon>
       <span>{{ balance }}</span>
     </template>
-  </van-cell>
+  </van-cell> -->
 
   <div class="body" v-show="mainShow">
-    <van-divider :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0 16px' }">
+    <!-- <van-divider :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0 16px' }">
       可提交时间{{ START[0] }}:{{ START[1] }}-{{ END[0] }}:{{ END[1] }} 倒计时：
       <van-count-down style="color: #1989fa" :time="time" />
-    </van-divider>
+    </van-divider> -->
 
     <van-cell-group inset class="input-button">
       <van-field v-model="wxurl" label="链接" placeholder="输入身份链接" />
@@ -133,8 +133,7 @@ const clickBack = () => history.back()
       type="primary"
       @click="sumbit"
       :loading="buttonLoading"
-      :disabled="taskSubmitdisabled"
-      >提交抢座任务</van-button
+      >保存令牌</van-button
     >
   </div>
 

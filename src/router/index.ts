@@ -5,14 +5,27 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/mario/users/:uuid',
-      name: 'marioAdmin',
+      path: '/mario/:uuid',
+      name: 'adminHome',
       component: () => import('@/views/admin/AdminHome.vue')
     },
     {
+      path: '/mario/users',
+      name: 'userMangement',
+      meta: { requireAuth: true },
+      component: () => import('@/views/admin/UserManage.vue')
+    },
+    {
       path: '/mario/tasks',
-      name: 'task',
+      name: 'tasks',
+      meta: { requireAuth: true },
       component: () => import('@/views/admin/TaskList.vue')
+    },
+    {
+      path: '/mario/taskRets',
+      name: 'taskRets',
+      meta: { requireAuth: true },
+      component: () => import('@/views/admin/TaskRet.vue')
     },
     {
       path: '/user/:uuid',
@@ -31,12 +44,6 @@ const router = createRouter({
       meta: { requireAuth: true },
       component: () => import('@/views/user/UserTask.vue')
     },
-    // {
-    //   path: '/test',
-    //   name: 'test',
-    //   component: () => import('@/views/testPage.vue')
-    // },
-
     {
       path: '/help',
       name: 'help',
@@ -58,7 +65,7 @@ router.beforeEach((to, from, next) => {
     if (uuid !== '' && uuid !== undefined) {
       next()
     } else {
-      next({ name: 'errorPage', query: { redirect: to.fullPath } })
+      next({ name: 'ErrorPage', query: { redirect: to.fullPath } })
     }
   } else next()
 })
