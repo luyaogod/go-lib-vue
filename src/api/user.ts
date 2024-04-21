@@ -122,6 +122,7 @@ interface userTaskInfo {
   id: number
   add_time: string
   wx_cookie: string
+  open: boolean
   status: number
   user_id: number
 }

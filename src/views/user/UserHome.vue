@@ -2,7 +2,6 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUUIDStore } from '@/stores/userInfo'
-// import tyingTools from '@/components/tyingTools.vue'
 import { user_task, switchTaskStatus, userDetail } from '@/api/user'
 import MsgPop from '@/components/MsgPop.vue'
 
@@ -29,42 +28,40 @@ const params = ref(route.params)
 const store = useUUIDStore()
 const uuid = params.value.uuid as string
 const showStatusText = ref(false)
-const userTaskStatus = ref(5) //任务状态
+const userTaskStatus = ref(0) //任务状态
 const checked = ref(false) //任务开关Status
-const switchButtonLoading = ref(false) //切换按钮加载状态
 const balance = ref()
 const statusList = ref([
   {
-    text: '任务已关闭',
-    type: 'danger',
-    button: false
+    text: '令牌失效',
+    type: 'danger'
   },
   {
-    text: '任务已启动',
-    type: 'success',
-    button: true
-  },
-  {
-    text: '任务已启动',
-    type: 'success',
-    button: true
-  },
-  {
-    text: '任务已启动',
-    type: 'success',
-    button: true
-  },
-  {
-    text: '令牌已失效',
-    type: 'danger',
-    button: false
-  },
-  {
-    text: '请更新令牌',
-    type: 'danger',
-    button: false
+    text: '令牌有效',
+    type: 'success'
   }
 ])
+
+//用户任务数据请求函数
+function task_pull() {
+  user_task(uuid)
+    .catch(() => {
+      dangerMsg('任务数据获取失败！')
+    })
+    .then((rep) => {
+      console.log(rep)
+
+      if (!rep) {
+        userTaskStatus.value = 0 //用户无任务状态设置为失效
+        checked.value = false
+        showStatusText.value = true
+      } else {
+        userTaskStatus.value = rep.status
+        checked.value = rep.open
+        showStatusText.value = true
+      }
+    })
+}
 
 onMounted(() => {
   if (!uuid) router.push('error')
@@ -78,25 +75,10 @@ onMounted(() => {
           router.push('/error')
         } else {
           balance.value = rep.balance
-          // console.log(balance.value)
           store.UUID = uuid
           store.saveUUID(uuid)
           //请求用户任务数据
-          user_task(uuid)
-            .catch(() => {
-              dangerMsg('任务数据获取失败！')
-            })
-            .then((rep) => {
-              if (!rep) {
-                userTaskStatus.value = 5 //用户无任务状态设置为空
-                checked.value = false
-                showStatusText.value = true
-              } else {
-                userTaskStatus.value = rep.status
-                checked.value = statusList.value[rep.status].button
-                showStatusText.value = true
-              }
-            })
+          task_pull()
         }
       })
   }
@@ -104,36 +86,16 @@ onMounted(() => {
 
 //按钮切换事件
 function onUpdateValue() {
-  switchButtonLoading.value = true
+  const checkedStroe = checked.value //存储按钮初始状态
   showStatusText.value = false
   switchTaskStatus(uuid).then((result) => {
     if (result === true) {
       //更新数据
-      user_task(uuid)
-        .catch(() => {
-          dangerMsg('任务数据获取失败！')
-          switchButtonLoading.value = false
-          showStatusText.value = true
-        })
-        .then((rep) => {
-          if (!rep) {
-            userTaskStatus.value = 5 //用户无任务状态设置为空
-            checked.value = false
-            switchButtonLoading.value = false
-            showStatusText.value = true
-          } else {
-            userTaskStatus.value = rep.status
-            checked.value = statusList.value[rep.status].button
-            switchButtonLoading.value = false
-            showStatusText.value = true
-          }
-        })
-
-      // successMsg('切换成功')
-      switchButtonLoading.value = false
+      task_pull()
     } else {
+      //切换失败返回初始状态
+      checked.value = checkedStroe
       dangerMsg('切换失败')
-      switchButtonLoading.value = false
     }
   })
 }
@@ -172,12 +134,7 @@ function bottonClickThree() {
     </template>
 
     <template #right-icon>
-      <van-switch
-        v-model="checked"
-        @update:model-value="onUpdateValue"
-        :loading="switchButtonLoading"
-        size="22px"
-      />
+      <van-switch v-model="checked" @update:model-value="onUpdateValue" size="22px" />
     </template>
   </van-cell>
 
