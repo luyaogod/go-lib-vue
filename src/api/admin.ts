@@ -94,6 +94,7 @@ export async function updateUser(uuid: string, data: updateUserData): Promise<bo
 export interface taskItem {
   user_id: number
   id: number
+  open: boolean
   status: number
   add_time: string
   username: string

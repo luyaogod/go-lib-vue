@@ -25,6 +25,12 @@ onMounted(() => {
         getTaskList(uuid).then((rep) => {
           taskList.value = rep
           dataListLoading.value = false
+          //状态处理,设置关闭状态任务的状态码为3
+          for (let i = 0; i < taskList.value.length; i++) {
+            //设置有效且关闭的任务状态为3
+            if (taskList.value[i].status === 1)
+              if (taskList.value[i].open === false) taskList.value[i].status = 2
+          }
         })
       } else {
         router.push('/error')
@@ -37,24 +43,16 @@ onMounted(() => {
 
 const statusList = ref([
   {
-    text: 'close',
-    type: 'warning'
-  },
-  {
-    text: 'ready',
-    type: 'primary'
-  },
-  {
-    text: 'ready',
-    type: 'primary'
-  },
-  {
-    text: 'ready',
-    type: 'primary'
-  },
-  {
     text: 'lose',
     type: 'danger'
+  },
+  {
+    text: 'ready',
+    type: 'primary'
+  },
+  {
+    text: 'close',
+    type: 'warning'
   }
 ])
 
