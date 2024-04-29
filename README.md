@@ -1,39 +1,33 @@
-# go-lib-vue
+# 项目打包
 
-This template should help get you started developing with Vue 3 in Vite.
+本地测试
 
-## Recommended IDE Setup
-
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
-```sh
-pnpm install
+```bash
+ITE_API_URL=http://47.94.172.195:8000 \
+VITE_WEBSITE_UTL = http://47.94.172.195 \
+pnpm run build
 ```
 
-### Compile and Hot-Reload for Development
+阿里云
 
-```sh
-pnpm dev
+```bash
+ITE_API_URL=http://8.130.141.190:8000 \
+VITE_WEBSITE_UTL = http://8.130.141.190 \
+pnpm run build
 ```
 
-### Type-Check, Compile and Minify for Production
+京东云
 
-```sh
-pnpm build
+```bash
+ITE_API_URL=http://116.196.116.6:8000 \
+VITE_WEBSITE_UTL = http://116.196.116.6 \
+pnpm run build
 ```
 
-### Lint with [ESLint](https://eslint.org/)
+阿里云北京
 
-```sh
-pnpm lint
+```bash
+ITE_API_URL=http://47.94.172.195:8000 \
+VITE_WEBSITE_UTL = http://47.94.172.195 \
+pnpm run build
 ```
