@@ -3,8 +3,6 @@
 本地测试
 
 ```bash
-ITE_API_URL=http://47.94.172.195:8000 \
-VITE_WEBSITE_UTL = http://47.94.172.195 \
 pnpm run build
 ```
 
