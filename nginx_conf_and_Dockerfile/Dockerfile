@@ -1,5 +1,5 @@
 # 使用官方Nginx镜像作为基础镜像
-FROM nginx:stable-alpine
+FROM nginx:latest
 
 # 将本地的Nginx配置文件复制到容器的/etc/nginx/conf.d/default.conf
 COPY nginx.conf /etc/nginx/conf.d/default.conf
