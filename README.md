@@ -27,7 +27,7 @@ pnpm run build
 阿里云北京
 
 ```shell
-$env:VITE_API_URL="http://8.130.141.190:8000"
-$env:VITE_WEBSITE_URL="http://8.130.141.190"
+$env:VITE_API_URL="http://47.94.172.195:8000"
+$env:VITE_WEBSITE_URL="http://47.94.172.195"
 pnpm run build
 ```
